@@ -18,4 +18,4 @@ Example: friendlyfire 1234
 ```
 
 ## Blog post:
-- https://kreepblog.fly.dev/friendlyfire-bof-selective-process-freezing/
+- https://kreep.in/friendlyfire-bof-selective-process-freezing/
