@@ -1,4 +1,4 @@
-# FriendlyFireBOF
+# FriendlyFire
 
 **FriendlyFire** is a Beacon Object File (BOF) for Cobalt Strike that suspends non-UI (non-graphical) threads for a specified process by its Process ID (PID). By targeting threads that do not own a window, the BOF renders a process “invisibly unresponsive” without interfering with its GUI. A resume mode is provided for restoring thread execution.
 
